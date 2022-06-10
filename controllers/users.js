@@ -38,20 +38,23 @@ module.exports.getUserById = (req, res) => {
 
 module.exports.patchUserInfo = (req, res) => {
   const { name, about } = req.body;
-  const userId = req.user._id;
 
-  User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(req.user._id, { name, about }, {
+    new: true,
+    runValidators: true,
+  })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Пользователь не найден' });
+        res.status(404).send({ message: 'user is not found' });
+        return;
       }
-      return res.send(user);
+      res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Некорректные данные' });
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'incorrect data' });
       }
-      return res.status(500).send({ message: 'Ошибка на сервере!' });
+      return res.status(500).send({ message: 'error' });
     });
 };
 
