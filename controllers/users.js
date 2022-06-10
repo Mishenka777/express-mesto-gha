@@ -45,7 +45,7 @@ module.exports.patchUserInfo = (req, res) => {
       if (!user) {
         return res.status(404).send({ message: 'Пользователь не найден' });
       }
-      return res.send({ data: user });
+      return res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
