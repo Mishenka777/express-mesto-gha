@@ -6,16 +6,16 @@ const { PORT = 3000 } = process.env;
 mongoose.connect('mongodb://localhost:27017/mestodb');
 const app = express();
 app.use(bodyParser.json());
-app.use((req, _res, next) => {
+app.use((req, res, next) => {
   req.user = {
     _id: '62a2a3f0c6ec7c20d9bc01f9',
   };
   next();
 });
-app.use(require('./routes/users'));
-app.use(require('./routes/cards'));
+app.use('/users', require('./routes/users'));
+app.use('/cards', require('./routes/cards'));
 
-app.all('*', (_req, res) => {
+app.use((req, res) => {
   res.status(404).send({ message: 'Страница не найдена' });
 });
 app.listen(PORT);

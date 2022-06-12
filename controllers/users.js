@@ -4,7 +4,7 @@ module.exports.postUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Некорректные данные' });
@@ -13,10 +13,10 @@ module.exports.postUser = (req, res) => {
     });
 };
 
-module.exports.getUsers = (_req, res) => {
+module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(400).send({ message: 'Ошибка на сервере!' }));
+    .catch(() => res.status(500).send({ message: 'Ошибка на сервере!' }));
 };
 
 module.exports.getUserById = (req, res) => {

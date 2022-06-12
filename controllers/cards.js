@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 
-module.exports.getCards = (_req, res) => {
+module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
     .catch(() => res.status(500).send({ message: 'Ошибка на сервере!' }));
@@ -11,7 +11,7 @@ module.exports.postCard = (req, res) => {
   const owner = req.user._id;
 
   Card.create({ name, link, owner })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Некорректные данные' });
@@ -28,7 +28,7 @@ module.exports.deleteCardById = (req, res) => {
       if (!card) {
         return res.status(404).send({ message: 'Карточка не найдена' });
       }
-      return res.send({ message: card });
+      return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {

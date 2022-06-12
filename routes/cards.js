@@ -7,10 +7,10 @@ const {
   deleteCardLikeById,
 } = require('../controllers/cards');
 
-cardRouter.get('/cards', getCards);
-cardRouter.delete('/cards/:cardId', deleteCardById);
-cardRouter.post('/cards', postCard);
-cardRouter.put('/cards/:cardId/likes', putCardLikeById);
-cardRouter.delete('/cards/:cardId/likes', deleteCardLikeById);
+cardRouter.get('/', getCards);
+cardRouter.delete('/:cardId', deleteCardById);
+cardRouter.post('/', postCard);
+cardRouter.put('/:cardId/likes', putCardLikeById);
+cardRouter.delete('/:cardId/likes', deleteCardLikeById);
 
 module.exports = cardRouter;
