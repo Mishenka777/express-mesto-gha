@@ -50,7 +50,11 @@ module.exports.postUser = (req, res, next) => {
     }))
     .then((user) => res.status(201).send({
       data: {
-        name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        password: user.password,
       },
     }))
     .catch((err) => {
