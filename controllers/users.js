@@ -32,7 +32,7 @@ module.exports.login = (req, res, next) => {
         maxAge: 604800000,
         httpOnly: true,
         sameSite: true,
-      }).end();
+      }).send({ token });
     })
     .catch(() => next(new UnauthorizedError('Неверный e-mail или пароль')));
 };
