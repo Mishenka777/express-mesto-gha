@@ -27,21 +27,23 @@ module.exports.postCard = (req, res, next) => {
 module.exports.deleteCardById = (req, res, next) => {
   const { cardId } = req.params;
 
-  Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
+    .orFail(() => new NotFoundError('Карточка не найдена'))
     .then((card) => {
-      if (!card) {
-        return next(new NotFoundError('Карточка не найдена'));
-      }
       if (String(req.user._id) !== String(card.owner)) {
         return next(new FobiddenError('Нет доступа'));
       }
-      return res.send({ data: card });
+      return Card.findByIdAndRemove(req.params.cardId)
+        .then(() => {
+          res.send({ message: 'Карточка удалена' });
+        });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequest('некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -56,8 +58,9 @@ module.exports.putCardLikeById = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequest('некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -72,7 +75,8 @@ module.exports.deleteCardLikeById = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequest('некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };

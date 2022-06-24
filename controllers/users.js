@@ -10,15 +10,16 @@ module.exports.getUserMe = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь не найден'));
+        return next(new NotFoundError('Пользователь не найден'));
       }
       return res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequest('Введены некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -41,9 +42,6 @@ module.exports.postUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  if (!email || !password) {
-    next(new BadRequest('Введены некорректные данные'));
-  }
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
@@ -58,7 +56,7 @@ module.exports.postUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.code === 11000) {
-        next(new ConflictError('Некорректный E-mail'));
+        next(new ConflictError('Данный E-mail занят другим пользователем!'));
       } else {
         next(err);
       }
@@ -76,15 +74,16 @@ module.exports.getUserById = (req, res, next) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь не найден'));
+        return next(new NotFoundError('Пользователь не найден'));
       }
       return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequest('Введены некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -95,15 +94,16 @@ module.exports.patchUserInfo = (req, res, next) => {
   User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь не найден'));
+        return next(new NotFoundError('Пользователь не найден'));
       }
       return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new BadRequest('Введены некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -114,14 +114,15 @@ module.exports.patchUserAvatar = (req, res, next) => {
   User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        next(new NotFoundError('Пользователь не найден'));
+        return next(new NotFoundError('Пользователь не найден'));
       }
       return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         next(new BadRequest('Введены некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
