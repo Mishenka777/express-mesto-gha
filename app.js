@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors, celebrate, Joi } = require('celebrate');
-const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { regular } = require('./utils/constants');
 const auth = require('./middlewares/auth');
 const { login, postUser } = require('./controllers/users');
@@ -14,7 +13,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(requestLogger);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
@@ -37,7 +35,6 @@ app.use('/cards', require('./routes/cards'));
 app.use((req, res, next) => {
   next(new NotFoundError('Страница не найдена'));
 });
-app.use(errorLogger);
 app.use(errors());
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
